@@ -1,0 +1,14 @@
+{% extends 'school/base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="jumbotron text-center">
+    <h1 class="display-4">Welcome to Ugandan Secondary School Management System</h1>
+    <p class="lead">Manage students, subjects, results, and reports efficiently.</p>
+    <hr class="my-4">
+    <a class="btn btn-primary btn-lg" href="{% url 'student_list' %}" role="button">Manage Students</a>
+    <a class="btn btn-primary btn-lg" href="{% url 'bulk_add_results' %}" role="button">Add Results</a>
+    <a class="btn btn-primary btn-lg" href="{% url 'class_reports' %}" role="button">Class Reports</a>
+</div>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends 'school/base.html' %}
+
+{% block title %}Students{% endblock %}
+
+{% block content %}
+<h2>Student List</h2>
+
+<!-- Filter Options -->
+<div class="mb-4">
+    <h4>Filter by Class:</h4>
+    <div class="btn-group" role="group">
+        {% for code, name in class_years %}
+        <a href="{% url 'student_list' %}?class_year={{ code }}" class="btn btn-outline-primary {% if current_class == code %}active{% endif %}">{{ name }}</a>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="mb-4">
+    <h4>Filter by Level:</h4>
+    <div class="btn-group" role="group">
+        {% for code, name in levels %}
+        <a href="{% url 'student_list' %}?level={{ code }}" class="btn btn-outline-secondary {% if current_level == code %}active{% endif %}">{{ name }}</a>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="mb-3">
+    <a href="{% url 'student_list' %}" class="btn btn-info">Show All Students</a>
+    <a href="{% url 'student_create' %}" class="btn btn-success">Add Student</a>
+</div>
+
+<!-- Student Table -->
+{% if object_list %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Class</th>
+            <th>Level</th>
+            <th>Combination</th>
+            {% for subject in subjects %}
+            <th>{{ subject.name }}</th>
+            {% endfor %}
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for student in object_list %}
+        <tr>
+            <td>{{ student.student_id }}</td>
+            <td>{{ student.name }}</td>
+            <td>{{ student.get_class_year_display }}</td>
+            <td>{{ student.get_level_display }}</td>
+            <td>{{ student.combination|default:"N/A" }}</td>
+            {% for subject in subjects %}
+            <td>
+                {{ student_results.student.pk.subject.pk.score|default:"-" }}
+            </td>
+            {% endfor %}
+            <td>
+                <a href="{% url 'student_detail' student.pk %}" class="btn btn-info btn-sm">View</a>
+                <a href="{% url 'student_update' student.pk %}" class="btn btn-warning btn-sm">Edit</a>
+                <a href="{% url 'student_delete' student.pk %}" class="btn btn-danger btn-sm">Delete</a>
+                <a href="{% url 'report' student.pk %}" class="btn btn-secondary btn-sm">Generate Report</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No students found for the selected filter.</p>
+{% endif %}
+{% endblock %}

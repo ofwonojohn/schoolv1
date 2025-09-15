@@ -1,0 +1,43 @@
+{% extends 'school/base.html' %}
+
+{% block title %}Add Results for {{ student.name }}{% endblock %}
+
+{% block content %}
+<h2>Add Results for {{ student.name }} ({{ student.get_level_display }})</h2>
+
+{% if assigned_subjects %}
+<form method="post">
+    {% csrf_token %}
+    {{ formset.management_form }}
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Subject</th>
+                <th>Score (0-100)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for form in formset %}
+            <tr>
+                <td>{{ form.initial.subject.name }}</td>
+                <td>
+                    {{ form.score }}
+                    {{ form.subject }} <!-- Hidden input for subject -->
+                    {% if form.score.errors %}
+                    <div class="text-danger">
+                        {{ form.score.errors }}
+                    </div>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button type="submit" class="btn btn-success">Save All Results</button>
+    <a href="{% url 'student_detail' student.pk %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% else %}
+<p>No subjects assigned to {{ student.name }}. Please assign subjects first.</p>
+<a href="{% url 'assign_subjects' student.pk %}" class="btn btn-primary">Assign Subjects</a>
+{% endif %}
+{% endblock %}

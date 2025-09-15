@@ -1,0 +1,45 @@
+{% extends 'school/base.html' %}
+
+{% block title %}Bulk Add Results{% endblock %}
+
+{% block content %}
+<h2>Bulk Add Results</h2>
+
+{% if not formset %}
+<form method="post">
+    {% csrf_token %}
+    {{ select_form.as_p }}
+    <button type="submit" name="submit_selection" class="btn btn-primary">Load Students</button>
+</form>
+{% else %}
+<form method="post">
+    {% csrf_token %}
+    {{ formset.management_form }}
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Student Name</th>
+                <th>Score (0-100)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for form in formset %}
+            <tr>
+                <td>{{ form.initial.student.name }}</td>
+                <td>
+                    {{ form.score }}
+                    {{ form.student }}
+                    {{ form.subject }}
+                    {% if form.score.errors %}
+                    <div class="text-danger">{{ form.score.errors }}</div>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <button type="submit" name="submit_scores" class="btn btn-success">Save All Scores</button>
+    <a href="{% url 'bulk_add_results' %}" class="btn btn-secondary">Back to Selection</a>
+</form>
+{% endif %}
+{% endblock %}

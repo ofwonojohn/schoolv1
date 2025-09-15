@@ -1,0 +1,51 @@
+{% extends 'school/base.html' %}
+
+{% block title %}Class Reports{% endblock %}
+
+{% block content %}
+<h2>Class Reports</h2>
+
+<!-- Class Selection -->
+<div class="mb-4">
+    <h4>Select Class:</h4>
+    <div class="btn-group" role="group">
+        {% for code, name in class_years %}
+        <a href="{% url 'class_reports' %}?class_year={{ code }}" class="btn btn-outline-primary {% if current_class == code %}active{% endif %}">{{ name }}</a>
+        {% endfor %}
+    </div>
+</div>
+
+{% if current_class and object_list %}
+<h3>Students in {{ object_list.first.get_class_year_display }} with Marks</h3>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Student Name</th>
+            {% for subject in subjects %}
+            <th>{{ subject.name }} {% if subject.is_subsidiary %}(Subsidiary){% endif %}</th>
+            {% endfor %}
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for student in object_list %}
+        <tr>
+            <td>{{ student.name }}</td>
+            {% for subject in subjects %}
+            <td>
+                {{ student_results.student.pk.subject.pk.score|default:"-" }}
+            </td>
+            {% endfor %}
+            <td>
+                <a href="{% url 'report' student.pk %}" class="btn btn-secondary btn-sm">Generate Report</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% elif current_class %}
+<p>No students in this class.</p>
+{% else %}
+<p>Select a class to view students and marks.</p>
+{% endif %}
+{% endblock %}
